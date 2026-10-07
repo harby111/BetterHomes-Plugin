@@ -1,0 +1,18 @@
+name: BetterHomes
+version: '${project.version}'
+main: dev.betterhomes.BetterHomes
+api-version: '26.2'
+description: Modern GUI-based home system with animated teleport warmups.
+authors: [BetterHomes]
+
+permissions:
+  betterhomes.use:
+    description: Use /home, /homes, /sethome and /delhome
+    default: true
+  betterhomes.admin:
+    description: Reload the plugin and inspect/teleport/delete other players' homes
+    default: op
+  betterhomes.bypass.delay:
+    description: Skip the teleport warmup
+    default: false
+  # Limits are resolved dynamically: betterhomes.limit.<number> (e.g. betterhomes.limit.5).

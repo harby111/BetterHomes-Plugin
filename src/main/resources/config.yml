@@ -1,42 +1,69 @@
-# BaseHider configuration
-# Hiding is per-player and packet-only. The real world is never modified.
+# BetterHomes configuration. All text supports MiniMessage: https://docs.advntr.dev/minimessage/format.html
 
-# Worlds in which hiding is active. Every other world is ignored entirely.
-enabled-worlds:
-  - world
+homes:
+  # Limit when no betterhomes.limit.<n> permission is held (highest permission wins).
+  default-limit: 2
 
-# Content at least this many blocks BELOW the player's Y is hidden (shown as AIR).
-# Blocks are handled in 16x16x16 sections: a section is hidden once its TOP block
-# is at least this far below the player (conservative: nothing shallower than
-# this distance is ever hidden).
-hide-distance-y: 30
+teleport:
+  delay: 5            # seconds
+  bar-length: 20      # characters in the animated progress bar
 
-# A hidden section/entity is shown again once it is closer than this many blocks
-# below the player. Must be <= hide-distance-y. The gap between the two values is
-# the hysteresis band that prevents hide/reveal flicker.
-reveal-distance-y: 16
+database:
+  file: homes.db
+  pool-size: 4        # requires restart
 
-# Horizontal hiding unit. Hiding is done per chunk column, so 16 is the only
-# supported value (anything else is reset to 16 with a warning).
-horizontal-size: 16
+date-format: "yyyy-MM-dd HH:mm"
 
-# How often (in ticks) player positions and tracked entities are re-evaluated.
-# 20 ticks = 1 second. Block work only happens when the player's Y changed.
-update-interval-ticks: 20
+prefix: "<dark_gray>[<gradient:#55ffff:#5555ff>BetterHomes</gradient>]</dark_gray> "
 
-# Hide entities (mobs, players, item frames, minecarts, items, ...) that are
-# 'hide-distance-y' or more below the player. They keep existing on the server.
-hide-entities: true
+messages:
+  players-only: "<red>This command can only be used by players."
+  no-permission: "<red>You don't have permission to do that."
+  data-not-loaded: "<red>Your home data is still loading, please try again in a moment."
+  database-error: "<red>A database error occurred. Please contact an administrator."
+  home-set: "<green>Home <yellow><name></yellow> created at your location <gray>(<used>/<limit>)</gray>."
+  home-limit: "<red>You have reached your home limit of <yellow><limit></yellow>."
+  home-deleted: "<green>Home <yellow><name></yellow> deleted."
+  home-not-found: "<red>Home <yellow><name></yellow> does not exist."
+  world-missing: "<red>The world of that home is not loaded."
+  player-not-found: "<red>Player <yellow><player></yellow> was not found."
+  usage-delhome: "<gray>Usage: <yellow>/delhome <name>"
+  usage-betterhomes: "<gray>Usage: <yellow>/betterhomes reload"
+  reload-success: "<green>Configuration reloaded."
+  teleport-start: "<gray>Teleporting to home <yellow><name></yellow> in <yellow><seconds>s</yellow>. <red>Don't move!"
+  teleport-cancelled-move: "<red>Teleport cancelled because you moved!"
+  teleport-cancelled-damage: "<red>Teleport cancelled because you took damage!"
+  teleport-success: "<green>Teleported to home <yellow><name></yellow>."
 
-# Also drop sound / particle / world-effect packets that originate in hidden
-# sections (stops hidden chest opening sounds, break particles, etc.).
-filter-effects: true
+actionbar:
+  # Placeholders: <home> <bar> <time>
+  teleporting: "<gray>Teleporting to <yellow><home></yellow> <dark_gray>[</dark_gray><bar><dark_gray>]</dark_gray> <white><time>s"
+  arrived: "<green>✔ Welcome home!"
 
-# Cost units a single player may spend per server tick while already-loaded
-# chunks are being updated after a hide/reveal change. Hiding a section costs 1,
-# revealing a section costs 4 (it needs a real block read). Lower = smoother
-# server, slower visual catch-up.
-transition-budget: 8
-
-# Log hide/reveal transitions and errors. Never logs per block / per packet.
-debug: false
+gui:
+  title: "<dark_gray>Your Homes"
+  admin-title: "<dark_red>Homes of <player>"
+  # Placeholders: <name> <world> <x> <y> <z> <date>
+  home-name: "<gradient:#ffb199:#ff0844><bold>Home <name>"
+  home-lore:
+    - "<gray>World: <white><world>"
+    - "<gray>Coordinates: <white><x>, <y>, <z>"
+    - "<gray>Created: <white><date>"
+    - ""
+    - "<green>Left-Click <dark_gray>» <gray>Teleport"
+    - "<red>Right-Click <dark_gray>» <gray>Delete"
+  create-name: "<green><bold>Create new home"
+  create-lore:
+    - "<gray>Sets a home at your location."
+    - "<gray>Homes: <white><used>/<limit>"
+  limit-name: "<red><bold>Home limit reached"
+  limit-lore:
+    - "<gray>Homes: <white><used>/<limit>"
+    - "<gray>Delete a home to make space."
+  prev-name: "<yellow>« Previous Page"
+  next-name: "<yellow>Next Page »"
+  page-name: "<gray>Page <white><page><gray>/<white><pages>"
+  admin-info-name: "<red><bold>Admin view"
+  admin-info-lore:
+    - "<gray>Inspecting homes of <white><player>"
+    - "<gray>Homes: <white><used>"
