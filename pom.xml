@@ -17,12 +17,17 @@
              For reproducible builds, pin an exact version (e.g. 26.2.build.7-beta). -->
         <paper.version>[26.2.build,)</paper.version>
         <sqlite.version>3.50.3.0</sqlite.version>
+        <floodgate.version>2.2.3-SNAPSHOT</floodgate.version>
     </properties>
 
     <repositories>
         <repository>
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>opencollab</id>
+            <url>https://repo.opencollab.dev/main/</url>
         </repository>
     </repositories>
 
@@ -41,6 +46,14 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>${sqlite.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Floodgate API (+ Cumulus forms). Soft dependency: provided by the server's Floodgate plugin. -->
+        <dependency>
+            <groupId>org.geysermc.floodgate</groupId>
+            <artifactId>api</artifactId>
+            <version>${floodgate.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

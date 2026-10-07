@@ -24,6 +24,14 @@ public record Home(String name, String world, double x, double y, double z,
         return w == null ? null : new Location(w, x, y, z, yaw, pitch);
     }
 
+    public static final int COLOR_COUNT = 16;
+
+    /** Stable colour slot (0..15) derived from the home name, so colours don't shift on deletes. */
+    public int colorIndex() {
+        int n = numericName();
+        return Math.floorMod(n == Integer.MAX_VALUE ? name.hashCode() : n - 1, COLOR_COUNT);
+    }
+
     public int numericName() {
         try {
             return Integer.parseInt(name);

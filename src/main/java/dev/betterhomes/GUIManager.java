@@ -1,5 +1,6 @@
 package dev.betterhomes;
 
+import dev.betterhomes.bedrock.BedrockBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -13,9 +14,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,19 +69,34 @@ public final class GUIManager implements Listener {
             plugin.messages().send(player, "data-not-loaded");
             return;
         }
-        open(player, new HomesGui(id, player.getName(), false, plugin.homes().getHomes(id)));
+        List<Home> homes = plugin.homes().getHomes(id);
+        if (openBedrock(player, id, player.getName(), false, homes)) return;
+        open(player, new HomesGui(id, player.getName(), false, homes));
     }
 
     public void openAdmin(Player admin, UUID target, String targetName) {
         plugin.homes().fetchHomes(target)
                 .thenAccept(list -> {
-                    if (admin.isOnline()) open(admin, new HomesGui(target, targetName, true, list));
+                    if (!admin.isOnline()) return;
+                    if (openBedrock(admin, target, targetName, true, list)) return;
+                    open(admin, new HomesGui(target, targetName, true, list));
                 })
                 .exceptionally(ex -> {
                     plugin.getSLF4JLogger().error("Failed to open admin GUI for {}", target, ex);
                     plugin.mainThread().execute(() -> plugin.messages().send(admin, "database-error"));
                     return null;
                 });
+    }
+
+    /** Bedrock (Geyser/Floodgate) players get native forms; returns true if one was opened. */
+    private boolean openBedrock(Player viewer, UUID owner, String ownerName, boolean admin, List<Home> homes) {
+        BedrockBridge bridge = plugin.bedrock();
+        if (bridge == null || !plugin.getConfig().getBoolean("bedrock.use-forms", true)
+                || !bridge.isBedrock(viewer)) {
+            return false;
+        }
+        bridge.openMenu(viewer, owner, ownerName, admin, homes);
+        return true;
     }
 
     private void open(Player viewer, HomesGui gui) {
@@ -163,27 +176,14 @@ public final class GUIManager implements Listener {
                     ph("x", (int) Math.floor(home.x())),
                     ph("y", (int) Math.floor(home.y())),
                     ph("z", (int) Math.floor(home.z())),
-                    ph("date", formatDate(home.createdAt()))));
+                    ph("date", plugin.messages().formatDate(home.createdAt()))));
             meta.getPersistentDataContainer().set(homeKey, PersistentDataType.STRING, home.name());
         });
         return item;
     }
 
     private static Material bedFor(Home home) {
-        int n = home.numericName();
-        int index = n == Integer.MAX_VALUE ? home.name().hashCode() : n - 1;
-        return BEDS[Math.floorMod(index, BEDS.length)];
-    }
-
-    private String formatDate(long millis) {
-        String pattern = plugin.getConfig().getString("date-format", "yyyy-MM-dd HH:mm");
-        DateTimeFormatter fmt;
-        try {
-            fmt = DateTimeFormatter.ofPattern(pattern);
-        } catch (IllegalArgumentException _) {
-            fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        }
-        return fmt.withZone(ZoneId.systemDefault()).format(Instant.ofEpochMilli(millis));
+        return BEDS[home.colorIndex()];
     }
 
     // ---- listeners -------------------------------------------------------------------------

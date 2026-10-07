@@ -1,5 +1,7 @@
 package dev.betterhomes;
 
+import dev.betterhomes.bedrock.BedrockBridge;
+import dev.betterhomes.bedrock.FloodgateBridge;
 import dev.betterhomes.commands.BetterHomesCommand;
 import dev.betterhomes.commands.DelHomeCommand;
 import dev.betterhomes.commands.HomeCommand;
@@ -28,6 +30,7 @@ public final class BetterHomes extends JavaPlugin implements Listener {
     private HomeManager homes;
     private TeleportManager teleports;
     private GUIManager gui;
+    private BedrockBridge bedrock; // null when Floodgate is not installed
 
     @Override
     public void onEnable() {
@@ -45,6 +48,15 @@ public final class BetterHomes extends JavaPlugin implements Listener {
         homes = new HomeManager(this, database);
         teleports = new TeleportManager(this);
         gui = new GUIManager(this);
+
+        if (getServer().getPluginManager().isPluginEnabled("floodgate")) {
+            try {
+                bedrock = new FloodgateBridge(this);
+                getSLF4JLogger().info("Floodgate detected: Bedrock players will use native forms.");
+            } catch (Throwable t) { // NoClassDefFoundError etc. -> fall back to chest GUI
+                getSLF4JLogger().warn("Floodgate found but its API could not be hooked; Bedrock forms disabled.", t);
+            }
+        }
 
         var pm = getServer().getPluginManager();
         pm.registerEvents(this, this);
@@ -87,4 +99,5 @@ public final class BetterHomes extends JavaPlugin implements Listener {
     public HomeManager homes() { return homes; }
     public TeleportManager teleports() { return teleports; }
     public GUIManager gui() { return gui; }
+    public BedrockBridge bedrock() { return bedrock; }
 }

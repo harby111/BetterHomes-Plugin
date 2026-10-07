@@ -5,6 +5,13 @@ api-version: '26.2'
 description: Modern GUI-based home system with animated teleport warmups.
 authors: [BetterHomes]
 
+dependencies:
+  server:
+    floodgate:
+      load: BEFORE
+      required: false
+      join-classpath: true
+
 permissions:
   betterhomes.use:
     description: Use /home, /homes, /sethome and /delhome

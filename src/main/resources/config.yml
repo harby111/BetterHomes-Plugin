@@ -67,3 +67,24 @@ gui:
   admin-info-lore:
     - "<gray>Inspecting homes of <white><player>"
     - "<gray>Homes: <white><used>"
+
+# Native Bedrock forms (requires Geyser + Floodgate). Bedrock players get a form menu
+# instead of the chest GUI. MiniMessage is converted to Bedrock-compatible colours.
+bedrock:
+  use-forms: true
+  title: "<dark_gray>Your Homes"
+  admin-title: "<dark_red>Homes of <player>"
+  menu-content: "<gray>Homes: <white><used>/<limit>\n<gray>Select a home:"
+  admin-menu-content: "<gray>Inspecting <white><player><gray> (<white><used><gray> homes)\n<gray>Select a home:"
+  # Placeholders: <name> <world> <x> <y> <z> <date>
+  home-button: "<dark_gray><bold>Home <name></bold>\n<gray><world> | <x>, <y>, <z>"
+  create-button: "<dark_green><bold>+ Create new home"
+  home-title: "<dark_gray>Home <name>"
+  home-info: "<gray>World: <white><world>\n<gray>Coordinates: <white><x>, <y>, <z>\n<gray>Created: <white><date>"
+  teleport-button: "<dark_green>Teleport"
+  delete-button: "<dark_red>Delete"
+  back-button: "<dark_gray>Back"
+  confirm-title: "<dark_red>Delete home"
+  confirm-content: "<gray>Are you sure you want to delete home <white><name><gray>?"
+  confirm-yes: "<dark_red>Yes, delete"
+  confirm-no: "<dark_gray>Cancel"

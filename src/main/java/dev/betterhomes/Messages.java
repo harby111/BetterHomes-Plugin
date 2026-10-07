@@ -8,6 +8,9 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /** Thin MiniMessage layer over config.yml. Always reads live config so /betterhomes reload works. */
@@ -53,5 +56,16 @@ public final class Messages {
 
     private static Component noItalic(Component c) {
         return c.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+    }
+
+    public String formatDate(long millis) {
+        String pattern = plugin.getConfig().getString("date-format", "yyyy-MM-dd HH:mm");
+        DateTimeFormatter fmt;
+        try {
+            fmt = DateTimeFormatter.ofPattern(pattern);
+        } catch (IllegalArgumentException _) {
+            fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        }
+        return fmt.withZone(ZoneId.systemDefault()).format(Instant.ofEpochMilli(millis));
     }
 }
