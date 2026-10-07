@@ -13,8 +13,9 @@
     <properties>
         <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Adjust to the exact Paper API coordinate published for 26.2 (see https://repo.papermc.io) -->
-        <paper.version>26.2-R0.1-SNAPSHOT</paper.version>
+        <!-- Paper 26.x uses "26.2.build.N" versions; this range resolves to the newest 26.2 build.
+             For reproducible builds, pin an exact version (e.g. 26.2.build.7-beta). -->
+        <paper.version>[26.2.build,)</paper.version>
         <sqlite.version>3.50.3.0</sqlite.version>
     </properties>
 
