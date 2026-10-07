@@ -1,0 +1,19 @@
+name: BaseHider
+version: '${project.version}'
+main: dev.basehider.BaseHiderPlugin
+api-version: '26.2'
+description: Per-player, packet-only hiding of underground bases.
+author: BaseHider
+depend:
+  - packetevents
+
+commands:
+  basehider:
+    description: BaseHider administration
+    usage: /basehider <reload|status>
+    permission: basehider.admin
+
+permissions:
+  basehider.admin:
+    description: Allows /basehider reload and /basehider status
+    default: op

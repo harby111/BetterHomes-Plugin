@@ -1,0 +1,42 @@
+# BaseHider configuration
+# Hiding is per-player and packet-only. The real world is never modified.
+
+# Worlds in which hiding is active. Every other world is ignored entirely.
+enabled-worlds:
+  - world
+
+# Content at least this many blocks BELOW the player's Y is hidden (shown as AIR).
+# Blocks are handled in 16x16x16 sections: a section is hidden once its TOP block
+# is at least this far below the player (conservative: nothing shallower than
+# this distance is ever hidden).
+hide-distance-y: 30
+
+# A hidden section/entity is shown again once it is closer than this many blocks
+# below the player. Must be <= hide-distance-y. The gap between the two values is
+# the hysteresis band that prevents hide/reveal flicker.
+reveal-distance-y: 16
+
+# Horizontal hiding unit. Hiding is done per chunk column, so 16 is the only
+# supported value (anything else is reset to 16 with a warning).
+horizontal-size: 16
+
+# How often (in ticks) player positions and tracked entities are re-evaluated.
+# 20 ticks = 1 second. Block work only happens when the player's Y changed.
+update-interval-ticks: 20
+
+# Hide entities (mobs, players, item frames, minecarts, items, ...) that are
+# 'hide-distance-y' or more below the player. They keep existing on the server.
+hide-entities: true
+
+# Also drop sound / particle / world-effect packets that originate in hidden
+# sections (stops hidden chest opening sounds, break particles, etc.).
+filter-effects: true
+
+# Cost units a single player may spend per server tick while already-loaded
+# chunks are being updated after a hide/reveal change. Hiding a section costs 1,
+# revealing a section costs 4 (it needs a real block read). Lower = smoother
+# server, slower visual catch-up.
+transition-budget: 8
+
+# Log hide/reveal transitions and errors. Never logs per block / per packet.
+debug: false
